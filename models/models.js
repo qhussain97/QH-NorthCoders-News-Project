@@ -5,7 +5,7 @@ exports.selectTopics = () => {
         .then((result) => {
             return result.rows;
         });
-}
+};
 
 exports.selectArticles = () => {
     return db.query(
@@ -16,5 +16,18 @@ exports.selectArticles = () => {
         ORDER BY created_at DESC;`)
         .then((result) => {
             return result.rows;
-        })
+        });
+};
+
+exports.selectArticleById = (article_id) => {
+    const queryString = `
+        SELECT * FROM articles
+        WHERE article_id = $1`;
+    return db.query(queryString, [article_id])
+        .then((results) => {
+            if (results.rowCount === 0) {
+                return Promise.reject({ status: 404, message: 'Article not found' });
+        }
+    return results.rows[0];
+});
 }
