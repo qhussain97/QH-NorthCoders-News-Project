@@ -69,16 +69,15 @@ describe('GET /api/articles/:article_id', () => {
             })
         })
     });
-    // test('status 400: responds with invalid article id', () => {
-    //     return request(app)
-    //     .get('api/articles/:bananas')
-    //     .expect(400)
-    //     .then((response) => {
-    //         //console.log('HEL00000')
-    //         const message = response.body.message;
-    //         expect(message).toBe("Bad request")
-    //     })
-    // });
+    test('status 400: responds with invalid article id', () => {
+        return request(app)
+        .get('/api/articles/bananas')
+        .expect(400)
+        .then((response) => {
+            const message = response.body.message;
+            expect(message).toBe("Bad request")
+        })
+    });
     test('status 404: responds with valid, but non existent article_id', () => {
         return request(app)
         .get('/api/articles/24')
@@ -89,6 +88,42 @@ describe('GET /api/articles/:article_id', () => {
         });
     })
 })
+describe('GET /api.articles/:article_id/comments', () => {
+    test('status 200: responds with an array of comments for given article_id', () => {
+        return request(app)
+        .get('/api/articles/3/comments')
+        .expect(200)
+        .then((response) => {
+            const comments = response.body.comments;
+            console.log(response.body)
+            comments.forEach((comment) => {
+                expect(comment).toMatchObject({
+                    comment_id: expect.any(Number),
+                    votes: expect.any(Number),
+                    created_at: expect.any(String),
+                    author: expect.any(String),
+                    body: expect.any(String),
+                })
+            })
+        })
+    })
+    test('status 400: responds with invalid article_id', () => {
+        return request(app)
+        .get('/api/articles/bananas/comments')
+        .expect(400)
+        .then((response) => {
+            const message = response.body.message;
+            expect(message).toBe("Bad request")
+        })
+    })
+    test('status 404: responds to article that has  no comments', () => {
+        return request(app)
+        .get('/api/articles/2/comments')
+        .expect(404)
+        .then((response) => {
+            const message = response.body.message;
+            expect(message).toBe('Comments not found');
+        });
+    })
+})
 });
-
-

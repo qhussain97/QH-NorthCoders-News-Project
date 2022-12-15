@@ -1,4 +1,5 @@
-const { selectTopics, selectArticles, selectArticleById } = require('../models/models');
+const comments = require('../db/data/test-data/comments');
+const { selectTopics, selectArticles, selectArticleById, selectCommentsForArticleId } = require('../models/models');
 
 //GET requests
 exports.getTopics= (req, res) => {
@@ -22,4 +23,15 @@ exports.getArticleById = (req, res, next) => {
         .catch((err) => {
             next(err);
         });
+}
+
+exports.getCommentsForArticleId = (req, res, next) => {
+    const article_id = req.params.article_id;
+    selectCommentsForArticleId(article_id)
+        .then((comments) => {
+            res.status(200).send({ comments })
+        })
+        .catch((err) => {
+            next(err);
+        })
 }

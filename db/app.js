@@ -1,5 +1,5 @@
 const express = require('express');
-const { getTopics, getArticles, getArticleById } = require('../controllers/controllers.ncnews');
+const { getTopics, getArticles, getArticleById, getCommentsForArticleId } = require('../controllers/controllers.ncnews');
 const app = express();
 
 app.use(express.json());
@@ -8,6 +8,7 @@ app.use(express.json());
 app.get('/api/topics', getTopics);
 app.get('/api/articles', getArticles);
 app.get('/api/articles/:article_id', getArticleById);
+app.get('/api/articles/:article_id/comments', getCommentsForArticleId)
 
 //Patchpoints
 
