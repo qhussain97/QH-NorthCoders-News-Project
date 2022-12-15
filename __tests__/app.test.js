@@ -130,7 +130,6 @@ describe('GET /api.articles/:article_id/comments', () => {
         .get('/api/articles/2/comments')
         .expect(200)
         .then((response) => {
-            console.log(response.body)
             const comments = response.body.comments;
             expect(comments).toHaveLength(0)
             comments.forEach((comment) => {
