@@ -88,46 +88,55 @@ describe('GET /api/articles/:article_id', () => {
         });
     })
 })
-});
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// describe('GET /api/articles/:article_id/comments', () => {
-//     test('status: 200, responds with an array of comments for the given article_id', () => {
-//         return request(app)
-//         .get('/api/articles/3/comments')
-//         .expect(200)
-//         .then((response) => {
-//             const comments = response.body.article.comments
-//             const commentsArray = [[comment_id = 10,
-//                                     body = "git push origin master", 
-//                                     article_id = 3,
-//                                     author = icellusedkars,
-//                                     votes = 0,
-//                                     created_at = "2020-06-20 08:24:00 +0000"],
-//                                     [comment_id = 11,
-//                                     body = "Ambidextrous marsupial", 
-//                                     article_id = 3,
-//                                     author = icellusedkars,
-//                                     votes = 0,
-//                                     created_at = "2020-09-20 00:10:00 +0000"]];
-//             expect(comments).toEqual(commentsArray)
-//   })
-// })
-// })
-
-
+describe('GET /api.articles/:article_id/comments', () => {
+    test('status 200: responds with an array of comments for given article_id', () => {
+        return request(app)
+        .get('/api/articles/3/comments')
+        .expect(200)
+        .then((response) => {
+            const comments = response.body.comments;
+            expect(comments).toHaveLength(2)
+            comments.forEach((comment) => {
+                expect(comment).toMatchObject({
+                    comment_id: expect.any(Number),
+                    votes: expect.any(Number),
+                    created_at: expect.any(String),
+                    author: expect.any(String),
+                    body: expect.any(String),
+                })
+            })
+        })
+    })
+    test('status 400: responds with invalid article_id', () => {
+        return request(app)
+        .get('/api/articles/bananas/comments')
+        .expect(400)
+        .then((response) => {
+            const message = response.body.message;
+            expect(message).toBe("Bad request")
+        })
+    })
+    test('status 404: article does not exist, so no comments', () => {
+        return request(app)
+        .get('/api/articles/5737/comments')
+        .expect(404)
+        .then((response) => {
+            const message = response.body.message;
+            expect(message).toBe('Article not found')
+        })
+    })
+    test('status 200: article does exist, but has no comments', () => {
+        return request(app)
+        .get('/api/articles/2/comments')
+        .expect(200)
+        .then((response) => {
+            const comments = response.body.comments;
+            expect(comments).toHaveLength(0)
+            comments.forEach((comment) => {
+                expect(comment).toEqual([])
+        })
+    })
+})
+})
+})

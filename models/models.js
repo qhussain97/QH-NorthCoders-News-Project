@@ -1,4 +1,5 @@
 const db = require('../db/connection');
+const comments = require('../db/data/test-data/comments');
 
 exports.selectTopics = () => {
     return db.query("SELECT * FROM topics;")
@@ -30,4 +31,16 @@ exports.selectArticleById = (article_id) => {
         }
     return results.rows[0];
 });
-}
+};
+
+exports.selectCommentsForArticleId = (article_id) => {
+    let queryString = `
+        SELECT comments.comment_id, comments.body, comments.votes, comments.created_at, comments.author
+        FROM comments
+        WHERE article_id = $1
+        ORDER BY comments.created_at DESC`;
+    return db.query(queryString, [article_id])
+        .then((results) => {
+    return results.rows;
+});
+};
