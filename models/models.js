@@ -41,10 +41,6 @@ exports.selectCommentsForArticleId = (article_id) => {
         ORDER BY comments.created_at DESC`;
     return db.query(queryString, [article_id])
         .then((results) => {
-            if (results.rowCount === 0) {
-                return Promise.reject({ status: 404, message: 'Comments not found' });
-            }
     return results.rows;
 });
 };
-
