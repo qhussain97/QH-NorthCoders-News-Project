@@ -74,7 +74,6 @@ describe('GET /api/articles/:article_id', () => {
         .get('/api/articles/bananas')
         .expect(400)
         .then((response) => {
-            //console.log('HEL00000')
             const message = response.body.message;
             expect(message).toBe("Bad request")
         })
