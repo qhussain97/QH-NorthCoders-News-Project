@@ -3,7 +3,9 @@ const { getTopics, getArticles, getArticleById, getCommentsForArticleId, addComm
 const { insertComment } = require('../models/models');
 const app = express();
 const { handleCustomErrors, handleSqlErrors, handle404Errors, handle500s } = require('../errorHandlers');
+const cors = require('cors');
 
+app.use(cors());
 app.use(express.json());
 
 //Endpoints
