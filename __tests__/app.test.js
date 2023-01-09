@@ -13,6 +13,7 @@ afterAll(()=> {
     return db.end()
 });
 
+//GET Requests
 describe('GET /api/topics', () =>{
     test('status:200, responds with an array of topics', () =>{
         return request(app)
@@ -95,7 +96,6 @@ describe('GET /api.articles/:article_id/comments', () => {
         .expect(200)
         .then((response) => {
             const comments = response.body.comments;
-            console.log(response.body)
             comments.forEach((comment) => {
                 expect(comment).toMatchObject({
                     comment_id: expect.any(Number),
@@ -127,3 +127,94 @@ describe('GET /api.articles/:article_id/comments', () => {
     })
 })
 });
+
+//POST Requests
+describe('POST /api/articles/:article_id/comments', () => {
+    test('status 201: responds with posted comment', () => {
+        const newComment = {
+            body: "It is incredibly cold outside!",
+            username: "butter_bridge",
+        }
+        return request(app)
+        .post('/api/articles/2/comments')
+        .send(newComment)
+        .expect(201)
+        .then(({ body }) => {
+            const comment = body.comment;
+            expect(comment).toMatchObject({
+                article_id: 2,
+                body: "It is incredibly cold outside!",
+                author: "butter_bridge",
+                votes: expect.any(Number),
+                created_at: expect.any(String),
+                comment_id: 19,
+})
+})
+})
+    test('status 404: posting a comment that is valid but non-existent article', () => {
+        const newComment = {
+            body: "Once upon a time",
+            username: "butter_bridge",
+        }
+        return request(app)
+        .post('/api/articles/565/comments')
+        .send(newComment)
+        .expect(404)
+        .then(({ body }) => {
+            const message = body.message;
+            expect(message).toBe('Not Found')
+})
+    })
+    test('status 400: sends a comment with no username', () => {
+        const newComment = {
+            body: "Once upon a time",
+            username: 8,
+        }
+        return request(app)
+        .post('/api/articles/2/comments')
+        .send(newComment)
+        .expect(400)
+        .then(({ body }) => {
+            const message = body.message;
+            expect(message).toBe('Bad Request')
+})
+    })
+    test('status 400: sends a comment with no body', () => {
+        const newComment = {
+            body: 2,
+            username: "butter_bridge",
+        }
+        return request(app)
+        .post('/api/articles/2/comments')
+        .send(newComment)
+        .expect(400)
+        .then(({ body }) => {
+            const message = body.message;
+            expect(message).toBe('Bad Request')
+})
+    })
+})
+
+describe('PATCH /api/articles/:article_id', () => {
+    test('200: responds with newly updated ', () => {
+        const newVotes = { inc_votes: 100 }
+
+        return request(app)
+        .patch('/api/articles/2')
+        .send(newVotes)
+        .get(200)
+        .then((response) => {
+            console.log(response.body)
+            const updatedArticle = response.body.article
+            expect(updatedArticle).toMatchObject({
+                article_id: 2,
+                title: "Sony Vaio; or, The Laptop",
+                author: "mitch",
+                created_at: expect.any(String),
+                votes: 100,
+                comment_count: expect.any(String),
+                
+            })
+        })
+    })
+})

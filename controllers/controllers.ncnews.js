@@ -1,5 +1,5 @@
 const comments = require('../db/data/test-data/comments');
-const { selectTopics, selectArticles, selectArticleById, selectCommentsForArticleId } = require('../models/models');
+const { selectTopics, selectArticles, selectArticleById, selectCommentsForArticleId, insertComment } = require('../models/models');
 
 //GET requests
 exports.getTopics= (req, res) => {
@@ -32,6 +32,21 @@ exports.getCommentsForArticleId = (req, res, next) => {
             res.status(200).send({ comments })
         })
         .catch((err) => {
+            console.log(err)
             next(err);
         })
 }
+
+//POST 
+exports.addComment = (req, res, next) => {
+    const article_id = req.params.article_id;
+    const body = req.body.body;
+    const username = req.body.username;
+    insertComment(article_id, body, username)
+        .then((comment) => 
+            res.status(201).send({ comment }))
+        .catch((err) => {
+            console.log(err)
+            next(err)
+        })
+};

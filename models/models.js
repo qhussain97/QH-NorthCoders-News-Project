@@ -48,3 +48,15 @@ exports.selectCommentsForArticleId = (article_id) => {
 });
 };
 
+exports.insertComment = (article_id, body, username) => {
+    if (typeof(username) !== "string" || typeof(body) !== "string") {
+        return Promise.reject({ status: 400, message: 'Bad Request' })
+    }
+    return db
+        .query(
+            `INSERT INTO comments (article_id, author, body) 
+            VALUES ($1, $2, $3) 
+            RETURNING *;`, [article_id, username, body ])
+        .then(({ rows }) =>  
+       { return rows[0] })
+}

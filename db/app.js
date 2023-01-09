@@ -1,6 +1,8 @@
 const express = require('express');
-const { getTopics, getArticles, getArticleById, getCommentsForArticleId } = require('../controllers/controllers.ncnews');
+const { getTopics, getArticles, getArticleById, getCommentsForArticleId, addComment } = require('../controllers/controllers.ncnews');
+const { insertComment } = require('../models/models');
 const app = express();
+const { handleCustomErrors, handleSqlErrors, handle404Errors, handle500s } = require('../errorHandlers');
 
 app.use(express.json());
 
@@ -10,27 +12,15 @@ app.get('/api/articles', getArticles);
 app.get('/api/articles/:article_id', getArticleById);
 app.get('/api/articles/:article_id/comments', getCommentsForArticleId)
 
+//POST Points 
+app.post('/api/articles/:article_id/comments', addComment)
 //Patchpoints
+app.patch('')
 
 //Error handling middleware
-app.use((err, req, res, next) => {
-    if (err.code === '22P02') {
-        res.status(400).send({ message: 'Bad request' });
-    }  else {
-        next(err);
-    }
-});
-app.use((err, req, res, next) => {
-    if (err.message !== undefined) {
-        res.status(err.status).send({ message: err.message });
-    }   else {
-        next(err);
-    }
-});
-app.use((err, req, res, next) => { 
-console.log(err);
-res.sendStatus(500);
-});
-
+app.use(handleSqlErrors);
+app.use(handleCustomErrors);
+app.use('*', handle404Errors);
+app.use(handle500s);
 
 module.exports = app;
