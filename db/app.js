@@ -1,5 +1,5 @@
 const express = require('express');
-const { getTopics, getArticles, getArticleById, getCommentsForArticleId, addComment } = require('../controllers/controllers.ncnews');
+const { getTopics, getArticles, getArticleById, getCommentsForArticleId, addComment, patchVotesInArticle  } = require('../controllers/controllers.ncnews');
 const { insertComment } = require('../models/models');
 const app = express();
 const { handleCustomErrors, handleSqlErrors, handle404Errors, handle500s } = require('../errorHandlers');
@@ -15,7 +15,7 @@ app.get('/api/articles/:article_id/comments', getCommentsForArticleId)
 //POST Points 
 app.post('/api/articles/:article_id/comments', addComment)
 //Patchpoints
-app.patch('')
+app.patch('/api/articles/:article_id', patchVotesInArticle)
 
 //Error handling middleware
 app.use(handleSqlErrors);
