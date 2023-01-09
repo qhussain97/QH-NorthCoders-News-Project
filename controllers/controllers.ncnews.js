@@ -32,7 +32,6 @@ exports.getCommentsForArticleId = (req, res, next) => {
             res.status(200).send({ comments })
         })
         .catch((err) => {
-            console.log(err)
             next(err);
         })
 }
@@ -46,7 +45,6 @@ exports.addComment = (req, res, next) => {
         .then((comment) => 
             res.status(201).send({ comment }))
         .catch((err) => {
-            console.log(err)
             next(err)
         })
 };

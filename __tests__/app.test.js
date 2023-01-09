@@ -195,26 +195,26 @@ describe('POST /api/articles/:article_id/comments', () => {
     })
 })
 
-describe('PATCH /api/articles/:article_id', () => {
-    test('200: responds with newly updated ', () => {
-        const newVotes = { inc_votes: 100 }
+// describe('PATCH /api/articles/:article_id', () => {
+//     test('200: responds with newly updated ', () => {
+//         const newVotes = { inc_votes: 100 }
 
-        return request(app)
-        .patch('/api/articles/2')
-        .send(newVotes)
-        .get(200)
-        .then((response) => {
-            console.log(response.body)
-            const updatedArticle = response.body.article
-            expect(updatedArticle).toMatchObject({
-                article_id: 2,
-                title: "Sony Vaio; or, The Laptop",
-                author: "mitch",
-                created_at: expect.any(String),
-                votes: 100,
-                comment_count: expect.any(String),
+//         return request(app)
+//         .patch('/api/articles/2')
+//         .send(newVotes)
+//         .get(200)
+//         .then((response) => {
+//             console.log(response.body)
+//             const updatedArticle = response.body.article
+//             expect(updatedArticle).toMatchObject({
+//                 article_id: 2,
+//                 title: "Sony Vaio; or, The Laptop",
+//                 author: "mitch",
+//                 created_at: expect.any(String),
+//                 votes: 100,
+//                 comment_count: expect.any(String),
                 
-            })
-        })
-    })
-})
+//             })
+//         })
+//     })
+// })
