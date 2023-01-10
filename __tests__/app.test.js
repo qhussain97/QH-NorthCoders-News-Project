@@ -89,6 +89,7 @@ describe('GET /api/articles/:article_id', () => {
         });
     })
 })
+
 describe('GET /api.articles/:article_id/comments', () => {
     test('status 200: responds with an array of comments for given article_id', () => {
         return request(app)
@@ -96,6 +97,7 @@ describe('GET /api.articles/:article_id/comments', () => {
         .expect(200)
         .then((response) => {
             const comments = response.body.comments;
+            expect(comments).toHaveLength(2)
             comments.forEach((comment) => {
                 expect(comment).toMatchObject({
                     comment_id: expect.any(Number),
@@ -116,15 +118,27 @@ describe('GET /api.articles/:article_id/comments', () => {
             expect(message).toBe("Bad request")
         })
     })
-    test('status 404: responds to article that has  no comments', () => {
+    test('status 404: article does not exist, so no comments', () => {
         return request(app)
-        .get('/api/articles/2/comments')
+        .get('/api/articles/5737/comments')
         .expect(404)
         .then((response) => {
             const message = response.body.message;
-            expect(message).toBe('Comments not found');
-        });
+            expect(message).toBe('Article not found')
+        })
     })
+    test('status 200: article does exist, but has no comments', () => {
+        return request(app)
+        .get('/api/articles/2/comments')
+        .expect(200)
+        .then((response) => {
+            const comments = response.body.comments;
+            expect(comments).toHaveLength(0)
+            comments.forEach((comment) => {
+                expect(comment).toEqual([])
+        })
+    })
+})
 })
 });
 
