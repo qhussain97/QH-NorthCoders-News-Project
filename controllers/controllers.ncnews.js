@@ -1,5 +1,5 @@
 const comments = require('../db/data/test-data/comments');
-const { selectTopics, selectArticles, selectArticleById, selectCommentsForArticleId } = require('../models/models');
+const { selectTopics, selectArticles, selectArticleById, selectCommentsForArticleId, insertComment, updateVotesInArticles } = require('../models/models');
 
 //GET requests
 exports.getTopics= (req, res) => {
@@ -35,4 +35,30 @@ exports.getCommentsForArticleId = (req, res, next) => {
         .catch((err) => {
             next(err);
         })
+}
+
+//POST 
+exports.addComment = (req, res, next) => {
+    const article_id = req.params.article_id;
+    const body = req.body.body;
+    const username = req.body.username;
+    insertComment(article_id, body, username)
+        .then((comment) => 
+            res.status(201).send({ comment }))
+        .catch((err) => {
+            next(err)
+        })
+};
+
+//Patch
+
+exports.patchVotesInArticle = (req, res, next) => {
+    const article_id = req.params.article_id
+    const inc_votes = req.body.inc_votes
+    Promise.all([selectArticleById(article_id), updateVotesInArticles(inc_votes, article_id)]).then((resolvedPromises) => {
+        res.status(200).send( {updatesVotes: resolvedPromises[1][0]});
+    })
+    .catch((err) => {
+        next(err)
+    })
 }
